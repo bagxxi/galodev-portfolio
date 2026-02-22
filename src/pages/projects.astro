@@ -1,0 +1,187 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { projects } from "@/lib/portfolio";
+---
+
+<Layout title="Proyectos | GaloDev Portfolio">
+  <div class="relative px-4 md:px-8 py-12">
+    <!-- Page header -->
+    <header class="mb-12 max-w-4xl">
+      <span class="metadata block mb-4 dark:text-text-muted text-slate-500"
+        >// projects.list()</span
+      >
+      <h1
+        class="font-display text-4xl md:text-5xl font-bold dark:text-text-bright text-slate-900 mb-4"
+      >
+        <span class="text-accent-cyan">&lt;</span><span data-i18n="nav.projects"
+          >Proyectos</span
+        ><span class="text-accent-cyan">/&gt;</span>
+      </h1>
+      <p
+        class="dark:text-text-muted text-slate-600 text-lg"
+        data-i18n="projects.description_long"
+      >
+        Una colección de proyectos personales y colaborativos. Cada uno
+        representa un paso en mi camino como desarrollador.
+      </p>
+    </header>
+
+    <!-- Featured Projects -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-accent-green text-xl font-bold">★</span>
+        <h2
+          class="font-display text-2xl font-bold dark:text-text-bright text-slate-900"
+          data-i18n="projects.featured"
+        >
+          Destacados
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          projects
+            .filter((p) => p.featured)
+            .map((project) => (
+              <article class="glass-card rounded-xl overflow-hidden group transition-all duration-300 dark:bg-surface/50 bg-white shadow-md">
+                <div class="aspect-video w-full overflow-hidden">
+                  <img
+                    src={project.cover}
+                    alt={project.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onerror="this.src='/placeholder.svg'"
+                  />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-start justify-between mb-3">
+                    <h3 class="font-display text-xl font-bold dark:text-text-bright text-slate-900 group-hover:text-accent-cyan transition-colors">
+                      {project.title}
+                    </h3>
+                    <div class="flex gap-2">
+                      {project.demo && (
+                        <a
+                          href={project.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="dark:text-accent-green text-emerald-600 hover:text-accent-cyan transition-colors text-sm font-medium"
+                          data-i18n="projects.viewSite"
+                        >
+                          Ver sitio →
+                        </a>
+                      )}
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="dark:text-text-muted text-slate-500 hover:text-accent-magenta transition-colors text-sm"
+                        >
+                          Repo
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <p
+                    class="dark:text-text-muted text-slate-600 text-sm mb-4 line-clamp-2"
+                    data-i18n={`projects.${project.id}.description`}
+                  >
+                    {project.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {project.tech.map((tech) => (
+                      <span class="px-2 py-1 text-xs dark:bg-surface-light bg-slate-100 rounded dark:text-accent-cyan text-blue-600">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))
+        }
+      </div>
+    </section>
+
+    <!-- All Projects -->
+    <section>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-accent-magenta text-xl font-bold">◆</span>
+        <h2
+          class="font-display text-2xl font-bold dark:text-text-bright text-slate-900"
+          data-i18n="projects.more"
+        >
+          Más Proyectos
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {
+          projects
+            .filter((p) => !p.featured)
+            .map((project) => (
+              <article class="glass-card rounded-lg p-4 flex gap-4 group transition-all dark:bg-surface/50 bg-white shadow-sm">
+                <img
+                  src={project.cover}
+                  alt={project.title}
+                  class="w-20 h-20 rounded-lg object-cover shrink-0 shadow-sm"
+                  onerror="this.src='/placeholder.svg'"
+                />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-1">
+                    <h3 class="font-display font-semibold dark:text-text-bright text-slate-900 group-hover:text-accent-cyan transition-colors truncate">
+                      {project.title}
+                    </h3>
+                    <div class="flex gap-2 shrink-0">
+                      {project.demo && (
+                        <a
+                          href={project.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="dark:text-accent-green text-emerald-600 hover:text-accent-cyan text-xs font-medium"
+                          data-i18n="projects.view_short"
+                        >
+                          Ver →
+                        </a>
+                      )}
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="dark:text-text-muted text-slate-500 hover:text-accent-magenta text-xs"
+                        >
+                          Repo
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <p
+                    class="dark:text-text-muted text-slate-600 text-xs mb-2 line-clamp-1"
+                    data-i18n={`projects.${project.id}.description`}
+                  >
+                    {project.description}
+                  </p>
+                  <div class="flex flex-wrap gap-1">
+                    {project.tech.slice(0, 3).map((tech) => (
+                      <span class="text-xs dark:text-text-muted text-slate-500">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))
+        }
+      </div>
+    </section>
+
+    <!-- Background decoration -->
+    <div
+      class="absolute top-20 right-10 w-80 h-80 dark:bg-accent-cyan/5 bg-blue-500/5 rounded-full blur-3xl -z-10"
+    >
+    </div>
+    <div
+      class="absolute bottom-20 left-10 w-64 h-64 dark:bg-accent-magenta/5 bg-pink-500/5 rounded-full blur-3xl -z-10"
+    >
+    </div>
+  </div>
+</Layout>

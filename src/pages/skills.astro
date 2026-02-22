@@ -1,0 +1,53 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { skillCategories } from "@/lib/portfolio";
+---
+
+<Layout title="Skills | GaloDev Portfolio">
+  <div class="relative px-4 md:px-8 py-12">
+    <!-- Page header -->
+    <header class="mb-12 max-w-4xl">
+      <span class="metadata block mb-4">// skills.sh --list</span>
+      <h1 class="font-display text-4xl md:text-5xl font-bold text-text-bright mb-4" data-i18n="skills.title">
+        <span class="text-accent-green">{"{"}</span>Skills<span class="text-accent-green">{"}"}</span>
+      </h1>
+      <p class="text-text-muted text-lg" data-i18n="skills.subtitle">
+        Mi stack tecnológico y herramientas que utilizo en el día a día.
+      </p>
+    </header>
+
+    <!-- Skills by Category -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {skillCategories.map((category) => (
+        <section class="glass-card rounded-xl p-6 flex flex-col h-full transition-all">
+          <div class="flex items-center gap-3 mb-6 pb-4">
+            <span class="text-2xl">{category.icon}</span>
+            <h2 class="font-display text-xl md:text-2xl font-bold text-text-bright">{category.name}</h2>
+          </div>
+          
+          <!-- Skills as Terminal Tree -->
+          <div class="font-mono text-sm space-y-1 flex-1">
+            <div class="text-accent-green mb-2">├── entries/</div>
+            {category.skills.map((skill, index) => (
+              <div class="flex items-center gap-2 group">
+                <span class="text-text-muted">
+                  {index === category.skills.length - 1 ? '└──' : '├──'}
+                </span>
+                <span 
+                  class="w-2 h-2 rounded-full shrink-0"
+                  style={`background-color: ${skill.color}`}
+                ></span>
+                <span class="text-text group-hover:text-accent-magenta transition-colors">
+                  {skill.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <!-- Background decoration -->
+    <div class="absolute top-40 right-20 w-72 h-72 bg-accent-green/5 rounded-full blur-3xl -z-10"></div>
+  </div>
+</Layout>

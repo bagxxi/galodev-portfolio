@@ -1,0 +1,431 @@
+---
+import AsideMenu from "../components/AsideMenu.astro";
+import { ViewTransitions } from "astro:transitions";
+import { Player } from "@/components/Player.jsx";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="dark" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="google" content="notranslate" />
+    <meta
+      name="description"
+      content="GaloDev - Desarrollador Full Stack | Portafolio profesional"
+    />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Google Fonts: Space Grotesk + IBM Plex Sans + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>{title}</title>
+    <ViewTransitions fallback="none" />
+
+    <script is:inline>
+      // Initialize Language
+      function applyLang() {
+        const lang = localStorage.getItem("lang") || "es";
+        document.documentElement.setAttribute("lang", lang);
+        translatePage();
+      }
+
+      function translatePage() {
+        const currentLang =
+          document.documentElement.getAttribute("lang") || "es";
+        const elements = document.querySelectorAll("[data-i18n]");
+
+        const translations = {
+          es: {
+            "nav.home": "Inicio",
+            "nav.about": "Sobre mí",
+            "nav.projects": "Proyectos",
+            "nav.skills": "Skills",
+            "nav.contact": "Contacto",
+            "nav.music": "Música",
+            "nav.discover": "Descubrir",
+            "nav.genres": "Géneros",
+            "nav.viewProjects": "Ver Proyectos",
+            "greeting.hello": "Hola, soy",
+            "greeting.morning": "Buenos días",
+            "greeting.afternoon": "Buenas tardes",
+            "greeting.evening": "Buenas noches",
+            "projects.featured": "Proyectos Destacados",
+            "projects.viewAll": "Ver todos →",
+            "projects.description": "Una selección de mis mejores trabajos",
+            "projects.description_long":
+              "Una colección de proyectos personales y colaborativos. Cada uno representa un paso en mi camino como desarrollador.",
+            "projects.viewSite": "Ver sitio →",
+            "projects.more": "Más Proyectos",
+            "projects.view_short": "Ver →",
+            "about.title": "Sobre mí",
+            "about.subtitle": "Mi camino en el desarrollo",
+            "about.description":
+              "Soy un desarrollador full stack con pasión por crear soluciones elegantes y eficientes.",
+            "about.bio_full":
+              "Desarrollador apasionado por crear experiencias web modernas y eficientes.",
+            "about.location": "Ubicación:",
+            "about.timezone": "Zona:",
+            "about.repos": "Repositorios",
+            "about.techs": "Tecnologías",
+            "about.github_status": "GitHub Status",
+            "about.years": "Años Dev",
+            "about.location_val": "Chile",
+            "about.timezone_val": "UTC -03:00",
+            "skills.title": "Habilidades Técnicas",
+            "skills.subtitle": "Mi toolbox tecnológico",
+            "contact.title": "Contacto",
+            "contact.subtitle": "¿Tienes un proyecto en mente?",
+            "contact.form_send": "Enviar Mensaje",
+            "contact.email_label": "Email",
+            "contact.location_label": "Ubicación",
+            "contact.status_label": "Estado",
+            "contact.github_label": "GitHub",
+            "contact.response_time": "Respondo en",
+            "info.title": "Desarrollador Full Stack",
+            "info.status": "Disponible para proyectos",
+            // Project details
+            "projects.hormiga-app.description":
+              "Aplicación de finanzas personales...",
+            "projects.it-inventory.description":
+              "Sistema de gestión de inventario...",
+            "projects.inversiones-byg.description": "Sitio web corporativo...",
+            "projects.photography-portfolio.description":
+              "Sitio de portafolio...",
+          },
+          en: {
+            "nav.home": "Home",
+            "nav.about": "About me",
+            "nav.projects": "Projects",
+            "nav.skills": "Skills",
+            "nav.contact": "Contact",
+            "nav.music": "Music",
+            "nav.discover": "Discover",
+            "nav.genres": "Genres",
+            "nav.viewProjects": "View Projects",
+            "greeting.hello": "Hi, I'm",
+            "greeting.morning": "Good morning",
+            "greeting.afternoon": "Good afternoon",
+            "greeting.evening": "Good night",
+            "projects.featured": "Featured Projects",
+            "projects.viewAll": "View all →",
+            "projects.description": "A selection of my best work",
+            "projects.description_long":
+              "A collection of personal and collaborative projects. Each one represents a step in my journey as a developer.",
+            "projects.viewSite": "View site →",
+            "projects.more": "More Projects",
+            "projects.view_short": "View →",
+            "about.title": "About Me",
+            "about.subtitle": "My journey in development",
+            "about.description":
+              "I am a full stack developer passionate about creating elegant and efficient solutions.",
+            "about.bio_full":
+              "Passionate developer focused on building modern and efficient web experiences.",
+            "about.location": "Location:",
+            "about.timezone": "Timezone:",
+            "about.repos": "Repositories",
+            "about.techs": "Technologies",
+            "about.github_status": "GitHub Status",
+            "about.years": "Years Dev",
+            "about.location_val": "Chile",
+            "about.timezone_val": "UTC -03:00",
+            "skills.title": "Technical Skills",
+            "skills.subtitle": "My technical toolbox",
+            "contact.title": "Contact",
+            "contact.subtitle": "Have a project in mind?",
+            "contact.form_send": "Send Message",
+            "contact.email_label": "Email",
+            "contact.location_label": "Location",
+            "contact.status_label": "Status",
+            "contact.github_label": "GitHub",
+            "contact.response_time": "Response time",
+            "info.title": "Full Stack Developer",
+            "info.status": "Available for projects",
+            // Project details
+            "projects.hormiga-app.description":
+              "Personal finance application...",
+            "projects.it-inventory.description":
+              "Inventory management system...",
+            "projects.inversiones-byg.description": "Corporate website...",
+            "projects.photography-portfolio.description":
+              "Photography portfolio...",
+          },
+        };
+
+        elements.forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (translations[currentLang] && translations[currentLang][key]) {
+            el.textContent = translations[currentLang][key];
+          }
+        });
+
+        // Translate document title
+        try {
+          const pageTitles = {
+            es: {
+              Inicio: "Inicio",
+              "Sobre mí": "Sobre mí",
+              Proyectos: "Proyectos",
+              Skills: "Skills",
+              Contacto: "Contacto",
+              Música: "Música",
+            },
+            en: {
+              Inicio: "Home",
+              "Sobre mí": "About Me",
+              Proyectos: "Projects",
+              Skills: "Skills",
+              Contacto: "Contact",
+              Música: "Music",
+            },
+          };
+          const rawTitle = document.title.split(" | ")[0];
+          if (pageTitles[currentLang] && pageTitles[currentLang][rawTitle]) {
+            document.title = `${pageTitles[currentLang][rawTitle]} | GaloDev Portfolio`;
+          }
+        } catch (e) {
+          console.error("Title translation failed", e);
+        }
+      }
+
+      // Expose globally for Toggles
+      window.translatePage = translatePage;
+
+      // Initialize Language
+      function initApp() {
+        applyLang();
+      }
+
+      // Initial apply
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initApp);
+      } else {
+        initApp();
+      }
+
+      // Handle Astro page transitions
+      document.addEventListener("astro:after-swap", () => {
+        initApp();
+      });
+    </script>
+  </head>
+  <body class="bg-void text-text font-body transition-colors duration-300">
+    <div id="app" class="relative h-screen p-2 gap-2">
+      <aside class="[grid-area:aside] flex-col flex overflow-y-auto">
+        <AsideMenu />
+      </aside>
+      <main
+        class="[grid-area:main] rounded-lg bg-surface overflow-y-auto w-full relative transition-colors duration-300"
+      >
+        <!-- Dot grid background -->
+        <div
+          class="absolute inset-0 bg-dot-grid pointer-events-none dark:opacity-30 opacity-10"
+        >
+        </div>
+        <div class="relative z-10 text-text">
+          <slot />
+        </div>
+      </main>
+
+      <footer
+        class="[grid-area:player] h-[80px] bg-surface transition-colors duration-300 rounded-lg"
+      >
+        <Player client:load transition:name="media-player" transition:persist />
+      </footer>
+    </div>
+
+    <style>
+      #app {
+        display: grid;
+        grid-template-areas:
+          "main"
+          "player"
+          "aside";
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto auto;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      @media (min-width: 768px) {
+        #app {
+          grid-template-areas:
+            "aside main main"
+            "player player player";
+          grid-template-columns: 280px 1fr;
+          grid-template-rows: 1fr auto;
+        }
+      }
+
+      /* Desktop - full sidebar */
+      @media (min-width: 1024px) {
+        #app {
+          grid-template-columns: 350px 1fr;
+        }
+      }
+    </style>
+    <style is:global>
+      :root {
+        /* Tokyo Night / Dark Theme - Force Default */
+        --color-void: #09090b;
+        --color-surface: #121216;
+        --color-surface-light: #18181b;
+        --color-surface-lighter: #27272a;
+        --color-text: #a1a1aa;
+        --color-text-muted: #71717a;
+        --color-text-bright: #fafafa;
+
+        /* RGB values for transparency extensions */
+        --color-void-rgb: 9, 9, 11;
+        --color-surface-rgb: 18, 18, 22;
+        --color-text-rgb: 161, 161, 170;
+
+        --color-accent-cyan: #7dcfff;
+        --color-accent-magenta: #bb9af7;
+        --color-accent-violet: #9d7cd8;
+        --color-accent-pink: #f7768e;
+        --color-accent-green: #9ece6a;
+        --color-accent-orange: #ff9e64;
+        --color-accent-blue: #7aa2f7;
+
+        /* Transition timing */
+        --ease-out-cubic: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      html {
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        background: var(--color-void);
+        color: var(--color-text);
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+      }
+
+      /* Headings use Space Grotesk */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Space Grotesk", system-ui, sans-serif;
+      }
+
+      /* Mono text */
+      code,
+      pre,
+      .font-mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--color-surface);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--color-surface-lighter);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent-cyan);
+      }
+
+      /* Selection styling */
+      ::selection {
+        background: var(--color-accent-magenta);
+        color: var(--color-void);
+      }
+
+      /* Snappy transitions for interactive elements */
+      a,
+      button {
+        transition: all 0.2s var(--ease-out-cubic);
+      }
+
+      /* Technical badge style */
+      .badge {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+      }
+
+      /* Glassmorphism card */
+      .glass-card {
+        background: var(--color-surface);
+        background-color: rgba(var(--color-surface-rgb), 0.8);
+        backdrop-filter: blur(12px);
+      }
+
+      /* Typing animation */
+      .typing-effect {
+        overflow: hidden;
+        border-right: 2px solid var(--color-accent-cyan);
+        white-space: nowrap;
+        animation:
+          typing 3s steps(40, end),
+          blink-caret 0.75s step-end infinite;
+      }
+
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: var(--color-accent-cyan);
+        }
+      }
+
+      /* Metadata style for decorative elements */
+      .metadata {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        color: var(--color-text-muted);
+        letter-spacing: 0.02em;
+      }
+
+      /* Version badge */
+      .version-badge::before {
+        content: "v";
+      }
+    </style>
+    <script is:inline>
+      // Bloquear menú del click derecho
+      document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+      });
+    </script>
+  </body>
+</html>

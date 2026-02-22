@@ -1,0 +1,30 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+}
+
+const { href, class: className } = Astro.props;
+---
+
+<li class={className}>
+  <a
+    class="menu-item flex items-center gap-0 md:gap-4 text-zinc-400 hover:text-text-bright py-3 px-3 md:px-5 font-medium transition duration-300 justify-center md:justify-start"
+    href={href}
+    title=""
+  >
+    <span class="menu-icon shrink-0">
+      <slot name="icon" />
+    </span>
+    <span class="menu-text hidden md:inline">
+      <slot />
+    </span>
+  </a>
+</li>
+
+<style>
+  .menu-item:hover {
+    background: rgba(125, 207, 255, 0.1);
+    border-radius: 0.375rem;
+  }
+</style>
