@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usePlayerStore } from '@/store/playerStore';
 import { JAMENDO_CLIENT_ID, JAMENDO_BASE_URL, formatDuration } from '@/lib/jamendo';
 
@@ -21,10 +21,7 @@ export function MusicSearch() {
     const playJamendoTrack = usePlayerStore(state => state.playJamendoTrack);
 
     const searchTracks = async (searchQuery: string) => {
-        if (!JAMENDO_CLIENT_ID) {
-            console.error('Jamendo client_id not configured');
-            return [];
-        }
+        if (!JAMENDO_CLIENT_ID) return [];
 
         try {
             const params = new URLSearchParams({
@@ -39,7 +36,7 @@ export function MusicSearch() {
             const data = await response.json();
             return data.results || [];
         } catch (error) {
-            console.error('Error searching Jamendo tracks:', error);
+            if (import.meta.env.DEV) console.warn('Jamendo search failed:', error);
             return [];
         }
     };
@@ -92,7 +89,9 @@ export function MusicSearch() {
             <form onSubmit={handleSearch} className="flex gap-3 mb-6">
                 <div className="relative flex-1">
                     <input
-                        type="text"
+                        type="search"
+                        aria-label="Buscar canciones"
+                        maxLength={100}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Buscar canciones, artistas, géneros..."
@@ -115,8 +114,7 @@ export function MusicSearch() {
             {!JAMENDO_CLIENT_ID && (
                 <div className="mb-6 p-4 border border-accent-orange/50 rounded-lg bg-accent-orange/10">
                     <p className="text-accent-orange text-sm text-center">
-                        ⚠️ No se ha configurado el client_id de Jamendo.<br />
-                        Añade <code className="text-accent-cyan">PUBLIC_JAMENDO_CLIENT_ID</code> en los Secrets de tu repositorio en GitHub para el despliegue.
+                        El catálogo de música no está disponible temporalmente.
                     </p>
                 </div>
             )}
@@ -170,9 +168,11 @@ export function MusicSearch() {
                             <img
                                 src={track.image || '/placeholder.svg'}
                                 alt={track.name}
-                                className="w-12 h-12 rounded object-cover"
+                                className="w-12 h-12 rounded-sm object-cover"
                                 onError={(e) => {
-                                    (e.target as HTMLImageElement).src = '/placeholder.svg';
+                                    const img = e.currentTarget as HTMLImageElement;
+                                img.onerror = null;
+                                if (!img.src.endsWith('/placeholder.svg')) img.src = '/placeholder.svg';
                                 }}
                             />
 
@@ -194,8 +194,10 @@ export function MusicSearch() {
                             </span>
 
                             <button
+                                type="button"
                                 onClick={() => handlePlay(track)}
-                                className="w-10 opacity-0 group-hover:opacity-100 transition-opacity p-2 bg-accent-cyan text-void rounded-full hover:scale-110 text-xs"
+                                aria-label={`Reproducir ${track.name}`}
+                                className="w-10 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 focus-visible:opacity-100 transition-opacity p-2 bg-accent-cyan text-void rounded-full hover:scale-110 text-xs"
                                 title="Reproducir"
                             >
                                 ▶

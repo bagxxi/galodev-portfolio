@@ -1,24 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { projects } from "@/lib/portfolio";
-import { personalInfo } from "@/lib/portfolio";
+import { projects, personalInfo, games } from "@/lib/portfolio";
 
-// Convert projects to playlist-like format for cards
 const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
+const featuredGame = games[0];
 ---
 
 <Layout title="GaloDev Portfolio">
   <div id="home-container" class="relative transition-all duration-1000">
     <!-- Hero Section -->
-    <section class="relative px-8 pt-12 pb-8">
-      <div class="flex flex-col gap-6 max-w-4xl">
+    <section class="relative px-4 md:px-8 pt-10 md:pt-12 pb-8">
+      <div class="flex flex-col gap-5 md:gap-6 max-w-4xl">
         <!-- Metadata decorations -->
-        <div class="flex gap-4 items-center">
+        <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
           <span class="badge text-accent-cyan" data-i18n="info.status">
             {personalInfo.status}
           </span>
           <span class="metadata">
-            <span data-i18n="about.location_val">{personalInfo.location}</span> •
+            <span data-i18n="about.location_val">{personalInfo.location}</span> ·
             <span data-i18n="about.timezone_val">{personalInfo.timezone}</span>
           </span>
         </div>
@@ -46,17 +45,17 @@ const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
         </p>
 
         <!-- Quick navigation -->
-        <div class="flex flex-wrap gap-4 mt-4">
+        <div class="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-2">
           <a
             href="/projects"
-            class="px-6 py-3 bg-accent-cyan text-void font-semibold rounded-full hover:bg-accent-green transition-all hover:scale-105 flex items-center justify-center min-w-[160px]"
+            class="px-6 py-3 bg-accent-cyan text-void font-semibold rounded-full hover:bg-accent-green transition-all hover:scale-105 flex items-center justify-center sm:min-w-[160px]"
             data-i18n="nav.viewProjects"
           >
             Ver Proyectos
           </a>
           <a
             href="/contact"
-            class="px-6 py-3 text-accent-cyan rounded-full hover:bg-accent-cyan/10 transition-all flex items-center justify-center min-w-[160px]"
+            class="px-6 py-3 text-accent-cyan rounded-full border border-accent-cyan/30 hover:bg-accent-cyan/10 transition-all flex items-center justify-center sm:min-w-[160px]"
             data-i18n="nav.contact"
           >
             Contacto
@@ -66,15 +65,17 @@ const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
 
       <!-- Background gradient -->
       <div
+        aria-hidden="true"
         class="absolute inset-0 bg-gradient-to-b dark:from-accent-violet/10 from-blue-500/5 via-transparent to-transparent -z-10"
       >
       </div>
     </section>
 
     <!-- Featured Projects -->
-    <section class="px-8 py-6">
-      <div class="flex items-center justify-between mb-6">
+    <section class="px-4 md:px-8 py-6" aria-labelledby="featured-title">
+      <div class="flex items-center justify-between gap-4 mb-6">
         <h2
+          id="featured-title"
           class="font-display text-2xl font-bold text-text-bright"
           data-i18n="projects.featured"
         >
@@ -82,52 +83,95 @@ const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
         </h2>
         <a
           href="/projects"
-          class="text-sm text-text-muted hover:text-accent-cyan transition-colors"
+          class="text-sm text-text-muted hover:text-accent-cyan transition-colors shrink-0"
           data-i18n="projects.viewAll"
         >
           Ver todos →
         </a>
       </div>
 
-      <div class="flex flex-wrap gap-4">
+      <ul class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {
           featuredProjects.map((project) => (
-            <article class="group relative hover:bg-surface-light rounded-md transition-all duration-300">
+            <li class="group relative hover:bg-surface-light rounded-lg transition-colors duration-300">
               <a
                 href={project.demo || project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex relative p-3 overflow-hidden gap-2 pb-4 w-48 flex-col"
+                class="flex flex-col gap-3 p-3 pb-4 rounded-lg"
               >
-                <picture class="aspect-square w-full h-auto flex-none">
+                <div class="aspect-video w-full overflow-hidden rounded-md bg-surface-light">
                   <img
                     src={project.cover}
-                    alt={`Cover of ${project.title}`}
-                    class="object-cover w-full h-full rounded-md shadow-sm"
-                    onerror="this.src='/placeholder.svg'"
+                    alt={`Captura de ${project.title}`}
+                    width="1280"
+                    height="720"
+                    loading="lazy"
+                    decoding="async"
+                    class="object-cover object-top w-full h-full shadow-xs group-hover:scale-105 transition-transform duration-500"
+                    data-fallback="/placeholder.svg"
                   />
-                </picture>
+                </div>
 
-                <div class="flex flex-auto flex-col px-1">
-                  <h4 class="text-text-bright text-sm font-semibold">
+                <div class="flex flex-col gap-1 px-1">
+                  <h3 class="text-text-bright font-semibold">
                     {project.title}
-                  </h4>
+                    <span class="sr-only">(abre en una pestaña nueva)</span>
+                  </h3>
                   <span
-                    class="text-xs text-text-muted line-clamp-2"
+                    class="text-sm text-text-muted line-clamp-2"
                     data-i18n={`projects.${project.id}.description`}
                   >
                     {project.description}
                   </span>
                 </div>
               </a>
-            </article>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </section>
+
+    <!-- Games teaser -->
+    {
+      featuredGame && (
+        <section class="px-4 md:px-8 py-6 pb-10" aria-labelledby="games-title">
+          <div class="flex items-center justify-between gap-4 mb-6">
+            <h2
+              id="games-title"
+              class="font-display text-2xl font-bold text-text-bright"
+              data-i18n="nav.games"
+            >
+              Juegos
+            </h2>
+          </div>
+          <a
+            href="/games"
+            class="glass-card group flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl p-5 hover:bg-surface-light transition-colors"
+          >
+            <div class="flex-1 min-w-0">
+              <h3 class="font-display text-lg font-bold text-text-bright group-hover:text-accent-cyan transition-colors">
+                {featuredGame.title}
+              </h3>
+              <p class="text-sm text-text-muted mt-1" data-i18n="games.teaser">
+                Prueba Hospital de Medianoche, un juego 3D que corre directo en
+                el navegador.
+              </p>
+            </div>
+            <span
+              class="self-start sm:self-auto px-5 py-2 rounded-full bg-accent-magenta text-void font-semibold text-sm"
+              data-i18n="games.play"
+            >
+              Jugar
+            </span>
+          </a>
+        </section>
+      )
+    }
 
     <!-- Decorative gradient background -->
     <div
+      aria-hidden="true"
       class="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent -z-[1] pointer-events-none"
     >
     </div>

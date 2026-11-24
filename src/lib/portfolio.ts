@@ -58,188 +58,6 @@ export const personalInfo: PersonalInfo = {
     avatar: "/avatar.jpg"
 };
 
-// Translations
-export const translations = {
-    es: {
-        projects: {
-            featured: "Proyectos Destacados",
-            viewAll: "Ver todos",
-            description: "Una selección de mis mejores trabajos",
-            description_long: "Una colección de proyectos personales y colaborativos. Cada uno representa un paso en mi camino como desarrollador.",
-            viewSite: "Ver sitio →",
-            more: "Más Proyectos",
-            view_short: "Ver →"
-        },
-        greeting: {
-            hello: "Hola, soy",
-            morning: "Buenos días",
-            afternoon: "Buenas tardes",
-            evening: "Buenas noches"
-        },
-        nav: {
-            home: "Inicio",
-            about: "Sobre mí",
-            projects: "Proyectos",
-            skills: "Skills",
-            contact: "Contacto",
-            music: "Música",
-            discover: "Descubrir",
-            genres: "Géneros",
-            viewProjects: "Ver Proyectos"
-        },
-        about: {
-            title: "Sobre mí",
-            subtitle: "Mi camino en el desarrollo",
-            description: "Soy un desarrollador full stack con pasión por crear soluciones elegantes y eficientes.",
-            bio_full: "Desarrollador apasionado por crear experiencias web modernas y eficientes. Especializado en JavaScript, React y Python. Siempre aprendiendo y explorando nuevas tecnologías.",
-            experience: "Años de experiencia",
-            projects_count: "Proyectos completados",
-            coffee: "Tazas de café",
-            location: "Ubicación:",
-            timezone: "Zona:",
-            repos: "Repositorios",
-            techs: "Tecnologías",
-            github_status: "GitHub Status",
-            years: "Años Dev",
-            location_val: "Chile",
-            timezone_val: "UTC -03:00"
-        },
-        info: {
-            title: "Desarrollador Full Stack",
-            status: "Disponible para proyectos"
-        },
-        project_details: {
-            "hormiga-app": {
-                title: "HormigaApp",
-                description: "Aplicación de finanzas personales con seguimiento de gastos, presupuestos y ahorro mensual."
-            },
-            "it-inventory": {
-                title: "IT Inventory",
-                description: "Sistema de gestión de inventario para equipos de IT y recursos tecnológicos."
-            },
-            "inversiones-byg": {
-                title: "Inversiones BYG",
-                description: "Sitio web corporativo para empresa de inversiones inmobiliarias. Diseño profesional y optimizado para SEO."
-            },
-            "photography-portfolio": {
-                title: "Portfolio de Fotografía",
-                description: "Sitio de portafolio para fotografía profesional con galería interactiva y diseño moderno."
-            }
-        },
-        skills: {
-            title: "Habilidades Técnicas",
-            subtitle: "Mi toolbox tecnológico",
-            frontend: "Frontend",
-            backend: "Backend",
-            tools: "Herramientas",
-            data: "Análisis de Datos"
-        },
-        contact: {
-            title: "Contacto",
-            subtitle: "¿Tienes un proyecto en mente?",
-            form_name: "Nombre",
-            form_email: "Email",
-            form_message: "Mensaje",
-            form_send: "Enviar Mensaje",
-            success: "Mensaje enviado con éxito",
-            email_label: "Email",
-            location_label: "Ubicación",
-            status_label: "Estado",
-            github_label: "GitHub",
-            response_time: "Respondo en < 24h"
-        }
-    },
-    en: {
-        projects: {
-            featured: "Featured Projects",
-            viewAll: "View all",
-            description: "A selection of my best work",
-            description_long: "A collection of personal and collaborative projects. Each one represents a step in my journey as a developer.",
-            viewSite: "View site →",
-            more: "More Projects",
-            view_short: "View →"
-        },
-        greeting: {
-            hello: "Hi, I'm",
-            morning: "Good morning",
-            afternoon: "Good afternoon",
-            evening: "Good night"
-        },
-        nav: {
-            home: "Home",
-            about: "About me",
-            projects: "Projects",
-            skills: "Skills",
-            contact: "Contact",
-            music: "Music",
-            discover: "Discover",
-            genres: "Genres",
-            viewProjects: "View Projects"
-        },
-        about: {
-            title: "About Me",
-            subtitle: "My journey in development",
-            description: "I am a full stack developer passionate about creating elegant and efficient solutions.",
-            bio_full: "Passionate developer focused on building modern and efficient web experiences. Specialized in JavaScript, React, and Python. Always learning and exploring new technologies.",
-            experience: "Years of experience",
-            projects_count: "Completed projects",
-            coffee: "Coffee cups",
-            location: "Location:",
-            timezone: "Timezone:",
-            repos: "Repositories",
-            techs: "Technologies",
-            github_status: "GitHub Status",
-            years: "Years Dev",
-            location_val: "Chile",
-            timezone_val: "UTC -03:00"
-        },
-        info: {
-            title: "Full Stack Developer",
-            status: "Available for projects"
-        },
-        project_details: {
-            "hormiga-app": {
-                title: "HormigaApp",
-                description: "Personal finance application with expense tracking, budgets, and monthly savings."
-            },
-            "it-inventory": {
-                title: "IT Inventory",
-                description: "Inventory management system for IT equipment and technological resources."
-            },
-            "inversiones-byg": {
-                title: "Inversiones BYG",
-                description: "Corporate website for a real estate investment company. Professional and SEO-optimized design."
-            },
-            "photography-portfolio": {
-                title: "Photography Portfolio",
-                description: "Professional photography portfolio site with interactive gallery and modern design."
-            }
-        },
-        skills: {
-            title: "Technical Skills",
-            subtitle: "My technical toolbox",
-            frontend: "Frontend",
-            backend: "Backend",
-            tools: "Tools",
-            data: "Data Analysis"
-        },
-        contact: {
-            title: "Contact",
-            subtitle: "Have a project in mind?",
-            form_name: "Name",
-            form_email: "Email",
-            form_message: "Message",
-            form_send: "Send Message",
-            success: "Message sent successfully",
-            email_label: "Email",
-            location_label: "Location",
-            status_label: "Status",
-            github_label: "GitHub",
-            response_time: "Response time < 24h"
-        }
-    }
-};
-
 // Projects
 export const projects: Project[] = [
     {
@@ -249,18 +67,18 @@ export const projects: Project[] = [
         tech: ["React", "Django", "PostgreSQL", "REST API"],
         github: "https://github.com/bagxxi/hormigapp_front",
         demo: "https://mintcream-oyster-711300.hostingersite.com/",
-        cover: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=400&fit=crop",
+        cover: "/img/projects/hormiga-app.jpg",
         color: colors.green,
         featured: true
     },
     {
-        id: "it-inventory",
-        title: "IT Inventory",
-        description: "Sistema de gestión de inventario para equipos de IT y recursos tecnológicos.",
-        tech: ["React", "Node.js", "Cloudflare Pages"],
-        github: "https://github.com/bagxxi/it-inventory", // Privado
-        demo: "https://it-inventory-25p.pages.dev/",
-        cover: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=400&fit=crop",
+        id: "alejandra-balbontin",
+        title: "Alejandra Balbontín",
+        description: "Portafolio de fotografía documental y dirección de fotografía, con videos integrados y diseño minimalista.",
+        tech: ["HTML", "CSS", "JavaScript", "Vimeo"],
+        github: "",
+        demo: "https://alejandrabalbontin.cl/",
+        cover: "/img/projects/alejandra-balbontin.jpg",
         color: colors.blue,
         featured: true
     },
@@ -271,7 +89,7 @@ export const projects: Project[] = [
         tech: ["HTML", "CSS", "JavaScript", "SEO"],
         github: "",
         demo: "https://inversionesbyg.cl/",
-        cover: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=400&fit=crop",
+        cover: "/img/projects/inversiones-byg.jpg",
         color: colors.emerald,
         featured: true
     },
@@ -281,9 +99,36 @@ export const projects: Project[] = [
         description: "Sitio de portafolio para fotografía profesional con galería interactiva y diseño moderno.",
         tech: ["Astro", "React", "TypeScript"],
         github: "https://github.com/bagxxi/portafolio-foto",
-        cover: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=400&h=400&fit=crop",
+        cover: "/img/projects/photography-portfolio.jpg",
         color: colors.pink,
         featured: false
+    }
+];
+
+// Games
+export interface Game {
+    id: string;
+    title: string;
+    description: { es: string; en: string };
+    src: string;
+    tags: string[];
+    controls: { es: string; en: string };
+}
+
+export const games: Game[] = [
+    {
+        id: "hospital-medianoche",
+        title: "Hospital de Medianoche",
+        description: {
+            es: "Juego 3D de terror suave. Eres el interno del turno de noche: atiende a los animalitos enfermos, encuentra sus remedios y detecta a las anomalías antes de que entren al hospital.",
+            en: "Cozy-horror 3D game. You are the night-shift intern: treat sick little animals, find their remedies and spot the anomalies before they sneak into the hospital."
+        },
+        src: "/games/hospital-medianoche.html",
+        tags: ["JavaScript", "3D", "Desktop y móvil"],
+        controls: {
+            es: "WASD o flechas para caminar, arrastrar para mirar, E para usar. En celular: joystick y botón Usar.",
+            en: "WASD or arrow keys to walk, drag to look, E to interact. On mobile: joystick and Use button."
+        }
     }
 ];
 

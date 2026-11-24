@@ -8,8 +8,8 @@ import { skillCategories } from "@/lib/portfolio";
     <!-- Page header -->
     <header class="mb-12 max-w-4xl">
       <span class="metadata block mb-4">// skills.sh --list</span>
-      <h1 class="font-display text-4xl md:text-5xl font-bold text-text-bright mb-4" data-i18n="skills.title">
-        <span class="text-accent-green">{"{"}</span>Skills<span class="text-accent-green">{"}"}</span>
+      <h1 class="font-display text-4xl md:text-5xl font-bold text-text-bright mb-4">
+        <span class="text-accent-green" aria-hidden="true">{"{"}</span><span data-i18n="nav.skills">Skills</span><span class="text-accent-green" aria-hidden="true">{"}"}</span>
       </h1>
       <p class="text-text-muted text-lg" data-i18n="skills.subtitle">
         Mi stack tecnológico y herramientas que utilizo en el día a día.
@@ -21,8 +21,8 @@ import { skillCategories } from "@/lib/portfolio";
       {skillCategories.map((category) => (
         <section class="glass-card rounded-xl p-6 flex flex-col h-full transition-all">
           <div class="flex items-center gap-3 mb-6 pb-4">
-            <span class="text-2xl">{category.icon}</span>
-            <h2 class="font-display text-xl md:text-2xl font-bold text-text-bright">{category.name}</h2>
+            <span class="text-2xl" aria-hidden="true">{category.icon}</span>
+            <h2 class="font-display text-xl md:text-2xl font-bold text-text-bright" data-i18n={`skills.cat.${category.id}`}>{category.name}</h2>
           </div>
           
           <!-- Skills as Terminal Tree -->

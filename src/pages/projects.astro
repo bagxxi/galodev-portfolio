@@ -24,7 +24,7 @@ import { projects } from "@/lib/portfolio";
     <!-- Featured Projects -->
     <section class="mb-12">
       <div class="flex items-center gap-3 mb-6">
-        <span class="text-accent-green text-xl font-bold">★</span>
+        <span aria-hidden="true" class="text-accent-green text-xl font-bold">★</span>
         <h2
           class="font-display text-2xl font-bold text-text-bright"
           data-i18n="projects.featured"
@@ -42,23 +42,28 @@ import { projects } from "@/lib/portfolio";
                 <div class="aspect-video w-full overflow-hidden">
                   <img
                     src={project.cover}
-                    alt={project.title}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onerror="this.src='/placeholder.svg'"
+                    alt={`Captura de ${project.title}`}
+                    width="1280"
+                    height="720"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    data-fallback="/placeholder.svg"
                   />
                 </div>
                 <div class="p-5">
-                  <div class="flex items-start justify-between mb-3">
+                  <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 mb-3">
                     <h3 class="font-display text-xl font-bold text-text-bright group-hover:text-accent-cyan transition-colors">
                       {project.title}
                     </h3>
-                    <div class="flex gap-2">
+                    <div class="flex gap-3 shrink-0">
                       {project.demo && (
                         <a
                           href={project.demo}
                           target="_blank"
                           rel="noopener noreferrer"
                           class="text-accent-green hover:text-accent-cyan transition-colors text-sm font-medium"
+                          aria-label={`Ver sitio de ${project.title} (pestaña nueva)`}
                           data-i18n="projects.viewSite"
                         >
                           Ver sitio →
@@ -70,6 +75,7 @@ import { projects } from "@/lib/portfolio";
                           target="_blank"
                           rel="noopener noreferrer"
                           class="text-text-muted hover:text-accent-magenta transition-colors text-sm"
+                          aria-label={`Repositorio de ${project.title} en GitHub (pestaña nueva)`}
                         >
                           Repo
                         </a>
@@ -77,14 +83,14 @@ import { projects } from "@/lib/portfolio";
                     </div>
                   </div>
                   <p
-                    class="dark:text-text-muted text-slate-600 text-sm mb-4 line-clamp-2"
+                    class="text-text-muted text-sm mb-4"
                     data-i18n={`projects.${project.id}.description`}
                   >
                     {project.description}
                   </p>
                   <div class="flex flex-wrap gap-2">
                     {project.tech.map((tech) => (
-                      <span class="px-2 py-1 text-xs bg-surface-light rounded text-accent-cyan">
+                      <span class="px-2 py-1 text-xs bg-surface-light rounded-sm text-accent-cyan">
                         {tech}
                       </span>
                     ))}
@@ -99,7 +105,7 @@ import { projects } from "@/lib/portfolio";
     <!-- All Projects -->
     <section>
       <div class="flex items-center gap-3 mb-6">
-        <span class="text-accent-magenta text-xl font-bold">◆</span>
+        <span aria-hidden="true" class="text-accent-magenta text-xl font-bold">◆</span>
         <h2
           class="font-display text-2xl font-bold text-text-bright"
           data-i18n="projects.more"
@@ -113,15 +119,19 @@ import { projects } from "@/lib/portfolio";
           projects
             .filter((p) => !p.featured)
             .map((project) => (
-              <article class="glass-card rounded-lg p-4 flex gap-4 group transition-all shadow-sm">
+              <article class="glass-card rounded-lg p-4 flex gap-4 group transition-all shadow-xs">
                 <img
                   src={project.cover}
-                  alt={project.title}
-                  class="w-20 h-20 rounded-lg object-cover shrink-0 shadow-sm"
-                  onerror="this.src='/placeholder.svg'"
+                  alt=""
+                  width="80"
+                  height="80"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover shrink-0 shadow-xs"
+                  data-fallback="/placeholder.svg"
                 />
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center justify-between gap-2 mb-1">
                     <h3 class="font-display font-semibold text-text-bright group-hover:text-accent-cyan transition-colors truncate">
                       {project.title}
                     </h3>
@@ -169,10 +179,12 @@ import { projects } from "@/lib/portfolio";
 
     <!-- Background decoration -->
     <div
+      aria-hidden="true"
       class="absolute top-20 right-10 w-80 h-80 dark:bg-accent-cyan/5 bg-blue-500/5 rounded-full blur-3xl -z-10"
     >
     </div>
     <div
+      aria-hidden="true"
       class="absolute bottom-20 left-10 w-64 h-64 dark:bg-accent-magenta/5 bg-pink-500/5 rounded-full blur-3xl -z-10"
     >
     </div>

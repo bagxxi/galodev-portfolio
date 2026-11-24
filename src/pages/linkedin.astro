@@ -8,7 +8,8 @@ const linkedinUrl = "https://www.linkedin.com/in/galodev/";
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="refresh" content="0; url={linkedinUrl}" />
+        <meta http-equiv="refresh" content={`0; url=${linkedinUrl}`} />
+        <meta name="robots" content="noindex" />
         <link rel="canonical" href={linkedinUrl} />
         <title>Redirigiendo a LinkedIn...</title>
         <style>
@@ -73,9 +74,9 @@ const linkedinUrl = "https://www.linkedin.com/in/galodev/";
             </p>
         </div>
 
-        <script>
+        <script is:inline define:vars={{ linkedinUrl }}>
             // JavaScript redirect as fallback
-            window.location.href = "{linkedinUrl}";
+            window.location.replace(linkedinUrl);
         </script>
     </body>
 </html>

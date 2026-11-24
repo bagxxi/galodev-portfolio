@@ -10,9 +10,9 @@ import { personalInfo, skillCategories } from "@/lib/portfolio";
       <span class="metadata block mb-4">// about_me.md</span>
       <h1
         class="font-display text-4xl md:text-5xl font-bold text-text-bright mb-4"
-        data-i18n="about.title"
       >
-        Sobre <span class="text-accent-magenta">mí</span>
+        <span data-i18n="about.title_a">Sobre</span>
+        <span class="text-accent-magenta" data-i18n="about.title_b">mí</span>
       </h1>
     </header>
 
@@ -35,10 +35,13 @@ import { personalInfo, skillCategories } from "@/lib/portfolio";
             >
               {personalInfo.displayName}
             </h2>
-            <span class="badge text-accent-green">{personalInfo.status}</span>
+            <span class="badge text-accent-green" data-i18n="info.status">{personalInfo.status}</span>
           </div>
 
-          <p class="text-lg md:text-xl text-accent-cyan font-display mb-4">
+          <p
+            class="text-lg md:text-xl text-accent-cyan font-display mb-4"
+            data-i18n="info.title"
+          >
             {personalInfo.title}
           </p>
 

@@ -2,14 +2,19 @@ import * as React from "react"
 import * as SliderPrimitive from "@radix-ui/react-slider"
 import cn from "clsx"
 
+type SliderProps = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & {
+  /** Accessible name announced for the slider thumb */
+  label?: string
+}
+
 export const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
->(({ className, ...props }, ref) => (
+  SliderProps
+>(({ className, label, ...props }, ref) => (
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
-      "relative flex touch-none select-none items-center group",
+      "relative flex touch-none select-none items-center group py-2",
       className
     )}
     {...props}
@@ -18,7 +23,11 @@ export const Slider = React.forwardRef<
       <SliderPrimitive.Range className="absolute h-full bg-white group-hover:bg-green-400" />
     </SliderPrimitive.Track>
 
-    <SliderPrimitive.Thumb className="hidden group-hover:block h-3 w-3 bg-white rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
+    {/* Kept in the layout (opacity instead of display:none) so it stays keyboard-focusable */}
+    <SliderPrimitive.Thumb
+      aria-label={label}
+      className="block h-3 w-3 bg-white rounded-full opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-opacity disabled:pointer-events-none disabled:opacity-50"
+    />
   </SliderPrimitive.Root>
 ))
 

@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Self-contained game files are not part of the design system */
+@source not "../../public";
+
+/* The site always renders in dark mode via the `dark` class on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens (Tokyo Night palette). `static` emits every variable so they
+ * can also be used directly from custom CSS, e.g. var(--color-accent-cyan).
+ */
+@theme static {
+  --color-void: #09090b;
+  --color-surface: #121216;
+  --color-surface-light: #18181b;
+  --color-surface-lighter: #27272a;
+  --color-text: #a1a1aa;
+  --color-text-muted: #71717a;
+  --color-text-bright: #fafafa;
+
+  --color-accent-cyan: #7dcfff;
+  --color-accent-magenta: #bb9af7;
+  --color-accent-violet: #9d7cd8;
+  --color-accent-pink: #f7768e;
+  --color-accent-green: #9ece6a;
+  --color-accent-orange: #ff9e64;
+  --color-accent-blue: #7aa2f7;
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@utility bg-dot-grid {
+  background-image: radial-gradient(
+    circle,
+    rgba(125, 207, 255, 0.15) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+/* Tailwind v3 compatibility defaults (see the official v4 upgrade guide) */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

@@ -1,6 +1,19 @@
 ---
 import AsideMenu from "../components/AsideMenu.astro";
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
+// Self-hosted fonts (no requests to Google Fonts; each file is limited by unicode-range)
+import "@fontsource/space-grotesk/400.css";
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/600.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-sans/700.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/700.css";
+import "../styles/global.css";
 import { Player } from "@/components/Player.jsx";
 
 interface Props {
@@ -19,26 +32,23 @@ const { title } = Astro.props;
       name="description"
       content="GaloDev - Desarrollador Full Stack | Portafolio profesional"
     />
-    <meta name="viewport" content="width=device-width" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#09090b" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
-    <meta name="generator" content={Astro.generator} />
-
-    <!-- Google Fonts: Space Grotesk + IBM Plex Sans + JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
 
     <title>{title}</title>
-    <ViewTransitions fallback="none" />
+    <ClientRouter fallback="none" />
 
     <script is:inline>
       // Initialize Language
       function applyLang() {
-        const lang = localStorage.getItem("lang") || "es";
+        // Only accept supported languages from (user-editable) storage
+        const stored = localStorage.getItem("lang");
+        const lang = stored === "en" || stored === "es" ? stored : "es";
         document.documentElement.setAttribute("lang", lang);
         translatePage();
       }
@@ -56,6 +66,8 @@ const { title } = Astro.props;
             "nav.skills": "Skills",
             "nav.contact": "Contacto",
             "nav.music": "Música",
+            "nav.games": "Juegos",
+            "nav.skip": "Saltar al contenido",
             "nav.discover": "Descubrir",
             "nav.genres": "Géneros",
             "nav.viewProjects": "Ver Proyectos",
@@ -71,6 +83,29 @@ const { title } = Astro.props;
             "projects.viewSite": "Ver sitio →",
             "projects.more": "Más Proyectos",
             "projects.view_short": "Ver →",
+            "about.title_a": "Sobre",
+            "about.title_b": "mí",
+            "skills.cat.frontend": "Frontend",
+            "skills.cat.backend": "Backend",
+            "skills.cat.tools": "Herramientas",
+            "skills.cat.data": "Análisis de Datos",
+            "music.subtitle":
+              "Descubre y escucha música libre de derechos de autor de Jamendo.",
+            "music.genres_title": "Playlists por Género",
+            "music.search_title": "Buscar Canciones",
+            "music.jamendo_title": "Música con Jamendo",
+            "music.cc_a": "Todas las canciones son",
+            "music.cc_b": ": libres para escuchar y compartir.",
+            "music.genre.metal": "Heavy riffs y power",
+            "music.genre.rock": "Rock clásico y moderno",
+            "music.genre.hiphop": "Beats underground",
+            "music.genre.electronic": "EDM y synth",
+            "music.genre.jazz": "Jazz contemporáneo",
+            "music.genre.classical": "Orquestal",
+            "notfound.title": "Página no encontrada",
+            "notfound.text":
+              "La página que buscas no existe o fue movida.",
+            "notfound.back": "Volver al inicio",
             "about.title": "Sobre mí",
             "about.subtitle": "Mi camino en el desarrollo",
             "about.description":
@@ -99,12 +134,28 @@ const { title } = Astro.props;
             "info.status": "Disponible para proyectos",
             // Project details
             "projects.hormiga-app.description":
-              "Aplicación de finanzas personales...",
-            "projects.it-inventory.description":
-              "Sistema de gestión de inventario...",
-            "projects.inversiones-byg.description": "Sitio web corporativo...",
+              "Aplicación de finanzas personales con seguimiento de gastos, presupuestos y ahorro mensual.",
+            "projects.alejandra-balbontin.description":
+              "Portafolio de fotografía documental y dirección de fotografía, con videos integrados y diseño minimalista.",
+            "projects.inversiones-byg.description":
+              "Sitio web corporativo para empresa de inversiones inmobiliarias. Diseño profesional y optimizado para SEO.",
             "projects.photography-portfolio.description":
-              "Sitio de portafolio...",
+              "Sitio de portafolio para fotografía profesional con galería interactiva y diseño moderno.",
+            // Games
+            "games.title": "Juegos",
+            "games.subtitle":
+              "Proyectos jugables hechos con JavaScript. Funcionan en navegador y en celular.",
+            "games.play": "Jugar",
+            "games.fullscreen": "Pantalla completa",
+            "games.exitFullscreen": "Salir de pantalla completa",
+            "games.newTab": "Abrir en otra pestaña",
+            "games.controls": "Controles",
+            "games.hospital-medianoche.description":
+              "Juego 3D de terror suave. Eres el interno del turno de noche: atiende a los animalitos enfermos, encuentra sus remedios y detecta a las anomalías antes de que entren al hospital.",
+            "games.hospital-medianoche.controls":
+              "WASD o flechas para caminar, arrastrar para mirar, E para usar. En celular: joystick y botón Usar.",
+            "games.teaser":
+              "Prueba Hospital de Medianoche, un juego 3D que corre directo en el navegador.",
           },
           en: {
             "nav.home": "Home",
@@ -113,6 +164,8 @@ const { title } = Astro.props;
             "nav.skills": "Skills",
             "nav.contact": "Contact",
             "nav.music": "Music",
+            "nav.games": "Games",
+            "nav.skip": "Skip to content",
             "nav.discover": "Discover",
             "nav.genres": "Genres",
             "nav.viewProjects": "View Projects",
@@ -128,6 +181,29 @@ const { title } = Astro.props;
             "projects.viewSite": "View site →",
             "projects.more": "More Projects",
             "projects.view_short": "View →",
+            "about.title_a": "About",
+            "about.title_b": "Me",
+            "skills.cat.frontend": "Frontend",
+            "skills.cat.backend": "Backend",
+            "skills.cat.tools": "Tools",
+            "skills.cat.data": "Data Analysis",
+            "music.subtitle":
+              "Discover and listen to royalty-free music from Jamendo.",
+            "music.genres_title": "Playlists by Genre",
+            "music.search_title": "Search Songs",
+            "music.jamendo_title": "Music by Jamendo",
+            "music.cc_a": "All songs are",
+            "music.cc_b": ": free to listen to and share.",
+            "music.genre.metal": "Heavy riffs and power",
+            "music.genre.rock": "Classic and modern rock",
+            "music.genre.hiphop": "Underground beats",
+            "music.genre.electronic": "EDM and synth",
+            "music.genre.jazz": "Contemporary jazz",
+            "music.genre.classical": "Orchestral",
+            "notfound.title": "Page not found",
+            "notfound.text":
+              "The page you are looking for does not exist or has been moved.",
+            "notfound.back": "Back to home",
             "about.title": "About Me",
             "about.subtitle": "My journey in development",
             "about.description":
@@ -156,12 +232,28 @@ const { title } = Astro.props;
             "info.status": "Available for projects",
             // Project details
             "projects.hormiga-app.description":
-              "Personal finance application...",
-            "projects.it-inventory.description":
-              "Inventory management system...",
-            "projects.inversiones-byg.description": "Corporate website...",
+              "Personal finance application with expense tracking, budgets, and monthly savings.",
+            "projects.alejandra-balbontin.description":
+              "Documentary photography and cinematography portfolio with embedded video and a minimalist design.",
+            "projects.inversiones-byg.description":
+              "Corporate website for a real estate investment company. Professional and SEO-optimized design.",
             "projects.photography-portfolio.description":
-              "Photography portfolio...",
+              "Professional photography portfolio site with interactive gallery and modern design.",
+            // Games
+            "games.title": "Games",
+            "games.subtitle":
+              "Playable projects built with JavaScript. They run in the browser and on mobile.",
+            "games.play": "Play",
+            "games.fullscreen": "Fullscreen",
+            "games.exitFullscreen": "Exit fullscreen",
+            "games.newTab": "Open in new tab",
+            "games.controls": "Controls",
+            "games.hospital-medianoche.description":
+              "Cozy-horror 3D game. You are the night-shift intern: treat sick little animals, find their remedies and spot the anomalies before they sneak into the hospital.",
+            "games.hospital-medianoche.controls":
+              "WASD or arrow keys to walk, drag to look, E to interact. On mobile: joystick and Use button.",
+            "games.teaser":
+              "Try Hospital de Medianoche, a 3D game that runs right in your browser.",
           },
         };
 
@@ -172,32 +264,25 @@ const { title } = Astro.props;
           }
         });
 
-        // Translate document title
-        try {
-          const pageTitles = {
-            es: {
-              Inicio: "Inicio",
-              "Sobre mí": "Sobre mí",
-              Proyectos: "Proyectos",
-              Skills: "Skills",
-              Contacto: "Contacto",
-              Música: "Música",
-            },
-            en: {
-              Inicio: "Home",
-              "Sobre mí": "About Me",
-              Proyectos: "Projects",
-              Skills: "Skills",
-              Contacto: "Contact",
-              Música: "Music",
-            },
-          };
-          const rawTitle = document.title.split(" | ")[0];
-          if (pageTitles[currentLang] && pageTitles[currentLang][rawTitle]) {
-            document.title = `${pageTitles[currentLang][rawTitle]} | GaloDev Portfolio`;
-          }
-        } catch (e) {
-          console.error("Title translation failed", e);
+        // Translate document title. Each entry lists both languages so the
+        // current title can be matched whichever language it is in (ES <-> EN).
+        const pageTitles = [
+          { es: "Inicio", en: "Home" },
+          { es: "Sobre mí", en: "About Me" },
+          { es: "Proyectos", en: "Projects" },
+          { es: "Skills", en: "Skills" },
+          { es: "Contacto", en: "Contact" },
+          { es: "Música", en: "Music" },
+          { es: "Juegos", en: "Games" },
+          { es: "Página no encontrada", en: "Page not found" },
+        ];
+        const parts = document.title.split(" | ");
+        const match = pageTitles.find(
+          (t) => t.es === parts[0] || t.en === parts[0],
+        );
+        if (match && parts.length > 1) {
+          parts[0] = match[currentLang] || match.es;
+          document.title = parts.join(" | ");
         }
       }
 
@@ -223,15 +308,25 @@ const { title } = Astro.props;
     </script>
   </head>
   <body class="bg-void text-text font-body transition-colors duration-300">
-    <div id="app" class="relative h-screen p-2 gap-2">
-      <aside class="[grid-area:aside] flex-col flex overflow-y-auto">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:px-4 focus:py-2 focus:rounded-md focus:bg-accent-cyan focus:text-void focus:font-semibold"
+      data-i18n="nav.skip">Saltar al contenido</a
+    >
+    <div id="app" class="relative p-2 gap-2">
+      <aside
+        class="[grid-area:aside] flex-col flex overflow-x-hidden overflow-y-auto"
+      >
         <AsideMenu />
       </aside>
       <main
-        class="[grid-area:main] rounded-lg bg-surface overflow-y-auto w-full relative transition-colors duration-300"
+        id="main-content"
+        tabindex="-1"
+        class="[grid-area:main] rounded-lg bg-surface overflow-y-auto overflow-x-hidden w-full min-w-0 relative transition-colors duration-300 focus:outline-none"
       >
         <!-- Dot grid background -->
         <div
+          aria-hidden="true"
           class="absolute inset-0 bg-dot-grid pointer-events-none dark:opacity-30 opacity-10"
         >
         </div>
@@ -241,7 +336,7 @@ const { title } = Astro.props;
       </main>
 
       <footer
-        class="[grid-area:player] h-[80px] bg-surface transition-colors duration-300 rounded-lg"
+        class="[grid-area:player] h-[64px] md:h-[80px] bg-surface transition-colors duration-300 rounded-lg"
       >
         <Player client:load transition:name="media-player" transition:persist />
       </footer>
@@ -255,51 +350,38 @@ const { title } = Astro.props;
           "player"
           "aside";
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr auto auto;
+        grid-template-rows: minmax(0, 1fr) auto auto;
         height: 100vh;
+        /* dvh accounts for mobile browser toolbars */
+        height: 100dvh;
         overflow: hidden;
+        padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
       }
 
       @media (min-width: 768px) {
         #app {
           grid-template-areas:
-            "aside main main"
-            "player player player";
-          grid-template-columns: 280px 1fr;
-          grid-template-rows: 1fr auto;
+            "aside main"
+            "player player";
+          grid-template-columns: 240px minmax(0, 1fr);
+          grid-template-rows: minmax(0, 1fr) auto;
         }
       }
 
       /* Desktop - full sidebar */
       @media (min-width: 1024px) {
         #app {
-          grid-template-columns: 350px 1fr;
+          grid-template-columns: 320px minmax(0, 1fr);
         }
       }
     </style>
     <style is:global>
       :root {
-        /* Tokyo Night / Dark Theme - Force Default */
-        --color-void: #09090b;
-        --color-surface: #121216;
-        --color-surface-light: #18181b;
-        --color-surface-lighter: #27272a;
-        --color-text: #a1a1aa;
-        --color-text-muted: #71717a;
-        --color-text-bright: #fafafa;
-
-        /* RGB values for transparency extensions */
+        /* Color tokens live in src/styles/global.css (@theme).
+           RGB values for transparency extensions: */
         --color-void-rgb: 9, 9, 11;
         --color-surface-rgb: 18, 18, 22;
         --color-text-rgb: 161, 161, 170;
-
-        --color-accent-cyan: #7dcfff;
-        --color-accent-magenta: #bb9af7;
-        --color-accent-violet: #9d7cd8;
-        --color-accent-pink: #f7768e;
-        --color-accent-green: #9ece6a;
-        --color-accent-orange: #ff9e64;
-        --color-accent-blue: #7aa2f7;
 
         /* Transition timing */
         --ease-out-cubic: cubic-bezier(0.22, 1, 0.36, 1);
@@ -354,6 +436,24 @@ const { title } = Astro.props;
       ::selection {
         background: var(--color-accent-magenta);
         color: var(--color-void);
+      }
+
+      /* Visible keyboard focus */
+      :focus-visible {
+        outline: 2px solid var(--color-accent-cyan);
+        outline-offset: 2px;
+      }
+
+      /* Respect users who prefer less motion */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
       }
 
       /* Snappy transitions for interactive elements */
@@ -421,11 +521,8 @@ const { title } = Astro.props;
         content: "v";
       }
     </style>
-    <script is:inline>
-      // Bloquear menú del click derecho
-      document.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-      });
+    <script>
+      import "../scripts/image-fallback";
     </script>
   </body>
 </html>

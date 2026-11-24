@@ -50,14 +50,15 @@ const genrePlaylists = [
 ---
 
 <Layout title="Música | GaloDev Portfolio">
-  <div class="relative px-8 py-12">
+  <div class="relative px-4 md:px-8 py-12">
     <!-- Page header -->
     <header class="mb-8 max-w-4xl">
       <span class="metadata block mb-4">// music.discover()</span>
-      <h1 class="font-display text-5xl font-bold text-text-bright mb-4">
-        <span class="text-accent-green">♫</span> Música
+      <h1 class="font-display text-4xl md:text-5xl font-bold text-text-bright mb-4">
+        <span class="text-accent-green" aria-hidden="true">♫</span>
+        <span data-i18n="nav.music">Música</span>
       </h1>
-      <p class="text-text-muted text-lg">
+      <p class="text-text-muted text-lg" data-i18n="music.subtitle">
         Descubre y escucha música libre de derechos de autor de Jamendo.
       </p>
     </header>
@@ -67,7 +68,8 @@ const genrePlaylists = [
       <h2
         class="font-display text-2xl font-bold text-text-bright mb-6 flex items-center gap-2"
       >
-        <span class="text-accent-magenta">★</span> Playlists por Género
+        <span class="text-accent-magenta" aria-hidden="true">★</span>
+        <span data-i18n="music.genres_title">Playlists por Género</span>
       </h2>
 
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -78,13 +80,14 @@ const genrePlaylists = [
               class="group relative overflow-hidden rounded-xl p-4 transition-all hover:scale-105 hover:shadow-xl"
               style={`background: linear-gradient(135deg, ${genre.color}40, ${genre.color}10); border: 1px solid ${genre.color}30;`}
             >
-              <div class="text-4xl mb-3">{genre.emoji}</div>
+              <div class="text-4xl mb-3" aria-hidden="true">{genre.emoji}</div>
               <h3 class="font-display font-bold text-text-bright group-hover:text-white transition-colors">
                 {genre.title}
               </h3>
-              <p class="text-xs text-text-muted mt-1">{genre.description}</p>
+              <p class="text-xs text-text-muted mt-1" data-i18n={`music.genre.${genre.id}`}>{genre.description}</p>
 
               <div
+                aria-hidden="true"
                 class="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-void text-xs"
                 style={`background: ${genre.color};`}
               >
@@ -101,14 +104,15 @@ const genrePlaylists = [
       <h2
         class="font-display text-2xl font-bold text-text-bright mb-6 flex items-center gap-2"
       >
-        <span class="text-accent-cyan">🔍</span> Buscar Canciones
+        <span class="text-accent-cyan" aria-hidden="true">🔍</span>
+        <span data-i18n="music.search_title">Buscar Canciones</span>
       </h2>
       <MusicSearch client:load />
     </section>
 
     <!-- Info Card -->
     <section class="glass-card rounded-xl p-6">
-      <div class="flex items-center gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
         <div
           class="w-12 h-12 bg-accent-cyan/20 rounded-full flex items-center justify-center text-2xl"
         >
@@ -116,19 +120,19 @@ const genrePlaylists = [
         </div>
         <div>
           <h3 class="font-display font-bold text-text-bright">
-            Música con Jamendo
+            <span data-i18n="music.jamendo_title">Música con Jamendo</span>
           </h3>
           <p class="text-sm text-text-muted">
-            Todas las canciones son <span class="text-accent-green"
-              >Creative Commons</span
-            > - libres para escuchar y compartir.
+            <span data-i18n="music.cc_a">Todas las canciones son</span>
+            <span class="text-accent-green">Creative Commons</span>
+            <span data-i18n="music.cc_b">: libres para escuchar y compartir.</span>
           </p>
         </div>
         <a
           href="https://www.jamendo.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="ml-auto px-4 py-2 border border-accent-cyan/50 text-accent-cyan rounded-full hover:bg-accent-cyan/10 transition-all text-sm"
+          class="sm:ml-auto self-start sm:self-auto px-4 py-2 border border-accent-cyan/50 text-accent-cyan rounded-full hover:bg-accent-cyan/10 transition-all text-sm"
         >
           Jamendo.com →
         </a>

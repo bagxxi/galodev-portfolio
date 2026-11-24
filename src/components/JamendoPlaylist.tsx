@@ -30,16 +30,13 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const playJamendoTrack = usePlayerStore(state => state.playJamendoTrack);
-
     useEffect(() => {
         const fetchTracks = async () => {
             // Check if API key is configured
+            // Visitors only see a generic message; configuration details stay in the dev console
             if (!JAMENDO_CLIENT_ID) {
-                const isProd = import.meta.env.PROD;
-                setError(isProd
-                    ? 'API Key no configurada. Verifica los Secrets de GitHub (PUBLIC_JAMENDO_CLIENT_ID) y que la Action haya terminado de compilar.'
-                    : 'API Key no configurada en el archivo .env local.');
+                if (import.meta.env.DEV) console.warn('PUBLIC_JAMENDO_CLIENT_ID is not set (.env)');
+                setError('El catálogo de música no está disponible temporalmente.');
                 setIsLoading(false);
                 return;
             }
@@ -57,14 +54,15 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
                 const response = await fetch(`${JAMENDO_BASE_URL}/tracks/?${params}`);
                 const data = await response.json();
 
-                if (data.headers?.status === 'failed') {
-                    setError(`Error de Jamendo: ${data.headers.error_message || 'API Key inválida'}`);
+                if (!response.ok || data.headers?.status === 'failed') {
+                    if (import.meta.env.DEV) console.warn('Jamendo error:', data.headers?.error_message);
+                    setError('El catálogo de música no está disponible temporalmente.');
                 } else {
                     setTracks(data.results || []);
                 }
             } catch (err) {
-                setError('Error de conexión con Jamendo');
-                console.error(err);
+                if (import.meta.env.DEV) console.warn('Jamendo request failed:', err);
+                setError('El catálogo de música no está disponible temporalmente.');
             } finally {
                 setIsLoading(false);
             }
@@ -73,7 +71,7 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
         fetchTracks();
     }, [tag]);
 
-    const handlePlay = (track: JamendoTrack, index: number) => {
+    const handlePlay = (index: number) => {
         // Convert all tracks to player format
         const songs = tracks.map(t => ({
             id: t.id,
@@ -98,7 +96,7 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
 
     const handlePlayAll = () => {
         if (tracks.length > 0) {
-            handlePlay(tracks[0], 0);
+            handlePlay(0);
         }
     };
 
@@ -118,7 +116,7 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
         return (
             <div className="p-8 text-center">
                 <div className="inline-block p-4 border border-accent-pink/30 bg-accent-pink/10 rounded-lg">
-                    <p className="text-accent-pink font-medium mb-2">⚠️ Error de Configuración</p>
+                    <p className="text-accent-pink font-medium mb-2">Música no disponible</p>
                     <p className="text-sm text-text-muted max-w-md mx-auto">
                         {error}
                     </p>
@@ -130,9 +128,9 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
     return (
         <div className="jamendo-playlist">
             {/* Playlist Header */}
-            <header className="flex flex-row gap-6 mb-8">
+            <header className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8">
                 <div
-                    className="w-48 h-48 rounded-lg flex items-center justify-center text-6xl shadow-xl"
+                    className="w-32 h-32 sm:w-48 sm:h-48 rounded-lg flex items-center justify-center text-5xl sm:text-6xl shadow-xl shrink-0"
                     style={{ background: `linear-gradient(135deg, ${accentColor}40, ${accentColor}10)` }}
                 >
                     {tag === 'metal' && '🎸'}
@@ -145,7 +143,7 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
 
                 <div className="flex flex-col justify-end">
                     <span className="text-xs uppercase tracking-wide text-text-muted mb-2">Playlist Jamendo</span>
-                    <h1 className="text-5xl font-display font-bold text-text-bright mb-2">{title}</h1>
+                    <h1 className="text-3xl sm:text-5xl font-display font-bold text-text-bright mb-2">{title}</h1>
                     <p className="text-text-muted mb-4">{description}</p>
                     <div className="flex items-center gap-4 text-sm text-text-muted">
                         <span>{tracks.length} canciones</span>
@@ -180,7 +178,13 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
                 {tracks.map((track, index) => (
                     <div
                         key={track.id}
-                        onClick={() => handlePlay(track, index)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Reproducir ${track.name} de ${track.artist_name}`}
+                        onClick={() => handlePlay(index)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePlay(index); }
+                        }}
                         className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-surface-light/50 group transition-colors cursor-pointer border border-transparent hover:border-accent-cyan/20"
                     >
                         <span className="text-text-muted text-sm w-8 font-mono group-hover:hidden">
@@ -191,9 +195,11 @@ export function JamendoPlaylist({ tag, title, description, accentColor }: Jamend
                         <img
                             src={track.image || '/placeholder.svg'}
                             alt={track.name}
-                            className="w-12 h-12 rounded object-cover"
+                            className="w-12 h-12 rounded-sm object-cover"
                             onError={(e) => {
-                                (e.target as HTMLImageElement).src = '/placeholder.svg';
+                                const img = e.currentTarget as HTMLImageElement;
+                                img.onerror = null;
+                                if (!img.src.endsWith('/placeholder.svg')) img.src = '/placeholder.svg';
                             }}
                         />
 

@@ -6,55 +6,70 @@ on:
       - main
   workflow_dispatch:
 
+# Least privilege: the job only needs to read the repository
+permissions:
+  contents: read
+
+# Never run two deploys against the server at the same time
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 20
+
     steps:
+      # Third-party actions are pinned to full commit SHAs (tag shown for reference)
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '18'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify Jamendo API Key
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      - name: Verify required secrets
+        # Secrets are passed through env and only tested for presence, never echoed
+        env:
+          PUBLIC_JAMENDO_CLIENT_ID: ${{ secrets.PUBLIC_JAMENDO_CLIENT_ID }}
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          if [ -z "${{ secrets.PUBLIC_JAMENDO_CLIENT_ID }}" ]; then
-            echo "❌ Error: PUBLIC_JAMENDO_CLIENT_ID no está configurado en los Secrets de GitHub"
-            echo "Debes ir a: Settings -> Secrets and variables -> Actions"
-            echo "Y crear un 'New repository secret' llamado PUBLIC_JAMENDO_CLIENT_ID"
-            exit 1
-          fi
+          missing=0
+          for name in PUBLIC_JAMENDO_CLIENT_ID FTP_SERVER FTP_USERNAME FTP_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing repository secret: $name (Settings > Secrets and variables > Actions)"
+              missing=1
+            fi
+          done
+          exit "$missing"
 
       - name: Build project
         run: npm run build
         env:
           PUBLIC_JAMENDO_CLIENT_ID: ${{ secrets.PUBLIC_JAMENDO_CLIENT_ID }}
 
-      - name: Verify FTP secrets are configured
-        run: |
-          if [ -z "${{ secrets.FTP_SERVER }}" ]; then
-            echo "❌ Error: FTP_SERVER secret is not configured"
-            echo "Please configure the following secrets in GitHub:"
-            echo "  - FTP_SERVER"
-            echo "  - FTP_USERNAME"
-            echo "  - FTP_PASSWORD"
-            echo "Go to: Settings → Secrets and variables → Actions"
-            exit 1
-          fi
-
-      - name: Deploy to Hostinger via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy to Hostinger via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@110f9186c050f71550953127052e77650219c287 # v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          security: strict
           local-dir: dist/
           server-dir: public_html/
           dangerous-clean-slate: false
@@ -62,4 +77,3 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-

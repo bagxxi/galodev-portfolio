@@ -1,9 +1,9 @@
 // Jamendo API Service
 // Free music streaming API - https://developer.jamendo.com/
 
-// The client_id is loaded from environment variables (.env file)
-// This keeps the API key private and out of Git!
-// In Astro, PUBLIC_ prefix makes the variable available on client-side
+// The client_id is read from PUBLIC_JAMENDO_CLIENT_ID at build time. It keeps the key
+// out of Git, but it is NOT secret: PUBLIC_ variables are embedded in the client bundle,
+// so anyone can read it. Protecting the quota would require a server-side proxy.
 export const JAMENDO_CLIENT_ID = import.meta.env.PUBLIC_JAMENDO_CLIENT_ID || '';
 export const JAMENDO_BASE_URL = 'https://api.jamendo.com/v3.0';
 

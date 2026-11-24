@@ -65,49 +65,57 @@ const CurrentSong = ({ image, title, artists }) => {
   )
 }
 
+const formatTime = time => {
+  if (!Number.isFinite(time) || time < 0) return '0:00'
+  const seconds = Math.floor(time % 60)
+  const minutes = Math.floor(time / 60)
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
 const SongControl = ({ audio }) => {
   const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
 
   useEffect(() => {
-    audio.current.addEventListener('timeupdate', handleTimeUpdate)
+    const el = audio.current
+    if (!el) return
 
+    const handleTimeUpdate = () => setCurrentTime(el.currentTime)
+    // duration is NaN until metadata loads (and Infinity for live streams)
+    const handleDuration = () => setDuration(Number.isFinite(el.duration) ? el.duration : 0)
+    const handleEmptied = () => { setCurrentTime(0); setDuration(0) }
+
+    el.addEventListener('timeupdate', handleTimeUpdate)
+    el.addEventListener('loadedmetadata', handleDuration)
+    el.addEventListener('durationchange', handleDuration)
+    el.addEventListener('emptied', handleEmptied)
     return () => {
-      audio.current.removeEventListener('timeupdate', handleTimeUpdate)
+      el.removeEventListener('timeupdate', handleTimeUpdate)
+      el.removeEventListener('loadedmetadata', handleDuration)
+      el.removeEventListener('durationchange', handleDuration)
+      el.removeEventListener('emptied', handleEmptied)
     }
-  }, [])
-
-  const handleTimeUpdate = () => {
-    setCurrentTime(audio.current.currentTime)
-  }
-
-  const formatTime = time => {
-    if (time == null) return `0:00`
-
-    const seconds = Math.floor(time % 60)
-    const minutes = Math.floor(time / 60)
-
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
-
-  const duration = audio?.current?.duration ?? 0
+  }, [audio])
 
   return (
     <div className="flex gap-x-2 md:gap-x-3 text-xs pt-2 w-full max-w-[500px] px-2">
       <span className="opacity-50 w-8 md:w-12 text-right text-[10px] md:text-xs">{formatTime(currentTime)}</span>
 
       <Slider
-        value={[currentTime]}
-        max={audio?.current?.duration ?? 0}
+        value={[Math.min(currentTime, duration)]}
+        max={duration}
         min={0}
+        disabled={duration === 0}
         className="flex-1 min-w-0"
+        label="Progreso de la canción"
         onValueChange={(value) => {
           const [newCurrentTime] = value
-          audio.current.currentTime = newCurrentTime
+          if (audio.current && Number.isFinite(newCurrentTime)) audio.current.currentTime = newCurrentTime
         }}
       />
 
       <span className="opacity-50 w-8 md:w-12 text-[10px] md:text-xs">
-        {duration ? formatTime(duration) : '0:00'}
+        {formatTime(duration)}
       </span>
     </div>
   )
@@ -146,7 +154,7 @@ const VolumeControl = () => {
 
   return (
     <div className="hidden md:flex justify-center gap-x-2 text-white items-center">
-      <button className="opacity-70 hover:opacity-100 transition" onClick={handleClickVolumen}>
+      <button type="button" className="opacity-70 hover:opacity-100 transition" onClick={handleClickVolumen} aria-label={isMuted ? "Activar sonido" : "Silenciar"}>
         <VolumeIcon />
       </button>
 
@@ -156,6 +164,7 @@ const VolumeControl = () => {
         min={0}
         value={[volume * 100]}
         className="w-[70px] lg:w-[95px]"
+        label="Volumen"
         onValueChange={(value) => {
           const [newVolume] = value
           const volumeValue = newVolume / 100
@@ -170,56 +179,85 @@ const VolumeControl = () => {
 export function Player() {
   const { currentMusic, isPlaying, setIsPlaying, volume, nextTrack, prevTrack } = usePlayerStore(state => state)
   const audioRef = useRef()
-  const volumeRef = useRef(1)
+  const hasSong = (currentMusic?.song?.audioUrl ?? '').toLowerCase().startsWith('https://')
 
+  // Load the selected track (only HTTPS stream URLs are accepted).
+  // Declared before the play/pause effect so that, when a track and isPlaying
+  // change together, the source is already set when play/pause runs.
   useEffect(() => {
-    isPlaying
-      ? audioRef.current.play()
-      : audioRef.current.pause()
-  }, [isPlaying])
-
-  useEffect(() => {
-    audioRef.current.volume = volume
-  }, [volume])
-
-  useEffect(() => {
-    const { song, playlist } = currentMusic
-    if (song) {
-      // Support both Jamendo URLs and local files
-      let src;
-      if (song.audioUrl) {
-        // Jamendo track - use the streaming URL directly
-        src = song.audioUrl;
-      } else {
-        // Local file
-        src = `/music/${playlist?.id}/0${song.id}.mp3`;
-      }
-      audioRef.current.src = src;
-      audioRef.current.volume = volumeRef.current;
-      audioRef.current.play().catch(e => console.log('Autoplay prevented:', e));
+    const audio = audioRef.current
+    const url = currentMusic?.song?.audioUrl
+    if (!audio || !url) return
+    let parsed
+    try { parsed = new URL(url) } catch { parsed = null }
+    if (!parsed || parsed.protocol !== 'https:') {
+      // Reject the source and stop whatever was playing, so UI and audio agree
+      audio.pause()
+      audio.removeAttribute('src')
+      audio.load()
+      setIsPlaying(false)
+      return
     }
+
+    audio.src = parsed.href
+    audio.volume = Math.min(1, Math.max(0, usePlayerStore.getState().volume))
+    audio.play()
+      .then(() => setIsPlaying(true))
+      .catch((err) => {
+        // AbortError just means a newer load/pause superseded this play()
+        if (err?.name !== 'AbortError') setIsPlaying(false)
+      })
   }, [currentMusic])
 
-  // Handle track end - auto-play next
+  // Play/pause; without a song the state is forced back to "not playing"
   useEffect(() => {
-    const audio = audioRef.current;
-    const handleEnded = () => {
-      nextTrack();
-    };
-    audio.addEventListener('ended', handleEnded);
-    return () => audio.removeEventListener('ended', handleEnded);
-  }, [nextTrack]);
+    const audio = audioRef.current
+    if (!audio) return
+    if (!currentMusic?.song?.audioUrl || !audio.src) {
+      if (isPlaying) setIsPlaying(false)
+      return
+    }
+    if (isPlaying) {
+      audio.play().catch((err) => {
+        if (err?.name !== 'AbortError') setIsPlaying(false)
+      })
+    } else {
+      audio.pause()
+    }
+  }, [isPlaying])
+
+  // Volume is applied on change and kept when switching tracks
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = Math.min(1, Math.max(0, volume))
+  }, [volume])
+
+  // Keep the store in sync with the element (media keys, OS controls, track end)
+  useEffect(() => {
+    const audio = audioRef.current
+    const handlePlay = () => setIsPlaying(true)
+    const handlePause = () => setIsPlaying(false)
+    const handleEnded = () => nextTrack()
+    audio.addEventListener('play', handlePlay)
+    audio.addEventListener('pause', handlePause)
+    audio.addEventListener('ended', handleEnded)
+    return () => {
+      audio.removeEventListener('play', handlePlay)
+      audio.removeEventListener('pause', handlePause)
+      audio.removeEventListener('ended', handleEnded)
+    }
+  }, [nextTrack, setIsPlaying])
 
   const handlePlayPause = () => {
+    if (!hasSong) return
     setIsPlaying(!isPlaying)
   }
 
   const handlePrev = () => {
-    prevTrack();
+    if (hasSong) prevTrack()
   }
 
   const handleNext = () => {
-    nextTrack();
+    if (hasSong) nextTrack()
   }
 
   return (
@@ -234,24 +272,33 @@ export function Player() {
         {/* Playback controls with prev/next */}
         <div className="flex items-center gap-3 md:gap-4">
           <button
-            className="opacity-70 hover:opacity-100 transition p-1"
+            className="opacity-70 hover:opacity-100 transition p-2 disabled:opacity-30 disabled:cursor-not-allowed"
             onClick={handlePrev}
+            disabled={!hasSong}
             title="Anterior"
+            aria-label="Canción anterior"
+            type="button"
           >
             <PrevIcon />
           </button>
 
           <button
-            className="bg-white rounded-full p-2 md:p-2 hover:scale-105 transition"
+            className="bg-white text-black rounded-full p-2.5 md:p-2 hover:scale-105 transition disabled:opacity-40 disabled:hover:scale-100 disabled:cursor-not-allowed"
             onClick={handlePlayPause}
+            disabled={!hasSong}
+            type="button"
+            aria-label={isPlaying ? "Pausar" : "Reproducir"}
           >
             {isPlaying ? <Pause /> : <Play />}
           </button>
 
           <button
-            className="opacity-70 hover:opacity-100 transition p-1"
+            className="opacity-70 hover:opacity-100 transition p-2 disabled:opacity-30 disabled:cursor-not-allowed"
             onClick={handleNext}
+            disabled={!hasSong}
             title="Siguiente"
+            aria-label="Canción siguiente"
+            type="button"
           >
             <NextIcon />
           </button>
@@ -274,13 +321,13 @@ export function Player() {
 
 // Prev/Next Icons
 const PrevIcon = () => (
-  <svg fill="currentColor" role="img" height="16" width="16" viewBox="0 0 16 16">
+  <svg fill="currentColor" aria-hidden="true" height="16" width="16" viewBox="0 0 16 16">
     <path d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.575a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7h1.6z"></path>
   </svg>
 )
 
 const NextIcon = () => (
-  <svg fill="currentColor" role="img" height="16" width="16" viewBox="0 0 16 16">
+  <svg fill="currentColor" aria-hidden="true" height="16" width="16" viewBox="0 0 16 16">
     <path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"></path>
   </svg>
 )

@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 import { loadEnv } from 'vite';
-import tailwind from "@astrojs/tailwind";
-import svelte from "@astrojs/svelte";
-import react from "@astrojs/react";
+import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
 
 // Load environment variables for both dev and build
 const envFromFile = loadEnv(
@@ -16,9 +15,12 @@ const JAMENDO_API_KEY = envFromFile.PUBLIC_JAMENDO_CLIENT_ID || process.env.PUBL
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind(), svelte(), react()],
+  integrations: [react()],
   output: 'static',
+  // Astro 7 defaults to 'jsx', which drops whitespace between inline elements
+  compressHTML: true,
   vite: {
+    plugins: [tailwindcss()],
     define: {
       // Force Vite to replace this at build time for client-side code
       'import.meta.env.PUBLIC_JAMENDO_CLIENT_ID': JSON.stringify(JAMENDO_API_KEY)

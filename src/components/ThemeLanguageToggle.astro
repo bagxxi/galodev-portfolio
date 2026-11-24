@@ -1,12 +1,16 @@
 ---
-
+interface Props {
+    compact?: boolean;
+}
+const { compact = false } = Astro.props;
 ---
 
-<div class="flex items-center gap-2 px-4 py-2">
+<div class:list={["flex items-center gap-2", compact ? "px-1" : "px-4 py-2"]}>
     <!-- Language Toggle -->
     <button
-        class="lang-toggle-btn px-3 py-1 rounded-md bg-surface border border-text-muted/20 hover:border-accent-magenta/50 text-text-muted hover:text-accent-magenta transition-all text-sm font-mono shadow-sm"
-        title="Change language"
+        type="button"
+        class="lang-toggle-btn min-h-[40px] px-3 py-1 rounded-md bg-surface border border-text-muted/20 hover:border-accent-magenta/50 text-text-muted hover:text-accent-magenta transition-all text-sm font-mono shadow-xs"
+        aria-label="Switch to English"
     >
         EN
     </button>
@@ -24,6 +28,10 @@
                 document.documentElement.getAttribute("lang") || "es";
             langBtns.forEach((btn) => {
                 btn.textContent = currentLang === "es" ? "EN" : "ES";
+                btn.setAttribute(
+                    "aria-label",
+                    currentLang === "es" ? "Switch to English" : "Cambiar a español",
+                );
             });
         }
 
