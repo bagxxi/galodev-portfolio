@@ -61,18 +61,20 @@ jobs:
         env:
           PUBLIC_JAMENDO_CLIENT_ID: ${{ secrets.PUBLIC_JAMENDO_CLIENT_ID }}
 
-      - name: Deploy to Hostinger via FTPS
+      # Plain FTP: Hostinger shared hosting resets FTPS data connections
+      # (TLS session reuse is not supported by the action's FTP client)
+      - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@110f9186c050f71550953127052e77650219c287 # v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftp
           port: 21
-          security: loose
           local-dir: dist/
           server-dir: public_html/
           dangerous-clean-slate: false
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**
